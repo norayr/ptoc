@@ -1,0 +1,74 @@
+.\"		@(#)ptc.man	1.3 Date 87/05/09
+.if \nP .pl \nP
+.TH PTOC 1
+.SH NAME
+ptoc \- Pascal to C translator
+.SH SYNOPSIS
+.B ptoc
+< pascal\ source > c\ source
+.SH DESCRIPTION
+.I Ptoc
+reads a correct Pascal program and prints a C program with
+the same behaviour.
+It is intended as a tool for transporting finished applications to
+environments that lack Pascal compilers,
+it is
+.I not
+intended for program development.
+.PP
+The input should comply with the ISO level 0 Pascal definition.
+Two common Pascal extensions are also recognized: the keyword
+.B otherwise
+may be used for default entries in case-statements,
+the keyword
+.B external
+may be used in place of the forward directive to signify that
+a procedure or function is defined in a library.
+Furthermore,
+the translator does not require a complete Pascal program,
+a consistent subset of declarations can be translated.
+Thus a primitive module concept is supported.
+.SH "SEE ALSO"
+Ptoc implementation notes.
+.SH CAVEATS
+The quality of an object program is of course highly dependent on the
+C compiler that processes the translated code.
+Arithmetic operations are sometimes implemented in a way that is incompatible
+with the Pascal definition.
+For example, the translator assumes that:
+.sp
+.nf
+	a := b mod c
+.fi
+.sp
+can be accurately translated into
+.sp
+.nf
+	a = b % c
+.fi
+.sp
+but that may not be true if c is negative.
+A check on the characteristics of integer and float arithmetic is
+strongly recommended.
+.PP
+Some Pascal constructs are impossible to express in C.
+The translator will not object to:
+.sp
+.nf
+	type	ptr = ^ ptr;
+.fi
+.sp
+but a C-compiler may balk at the resulting:
+.sp
+.nf
+	typedef	ptr * ptr;
+.fi
+.sp
+.SH BUGS
+The program can't translate comments from Pascal to C.
+.sp
+The translator does not do complete typechecking so
+a Pascal program that isn't formally correct may cause malfunction.
+.sp
+Passing a procedure as parameter to an enclosing recursive procedure
+may produce erroneous code (see the implementation notes).

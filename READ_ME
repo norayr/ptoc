@@ -1,0 +1,42 @@
+The following problems have been adressed.
+
+	1)	In some circumstances the reader misread 1..n which lead to
+		a complaint about malplaced floating point numbers.
+
+	2)	The translator generated double "->" arrows for references to
+		VAR-parameters that were pointers.
+
+	3)	Missing initialisation of pointers in a record variant for
+		case-statements sometimes caused the translator to crash.
+
+	4)	Calling "write" with a boolean literal as parameter caused the
+		translator to crash.
+
+	5)	Initialization of input. Programs that read input before
+		testing for eof can be made to work by defining a compiletime
+		constant STDINIT otherwise the first returned character will
+		be null.
+
+	6)	The code generated for procedurecalls with string-literal
+		parameters could cause the resulting program to crash due to
+		alignment errors. This is truly a PATCH, i.e. the "correct"
+		solution would require a redesign of the translator.
+
+		In this case the problem has been swept under the carpet at
+		the cost of some runtime overhead by copying data.
+		The behaviour of the translator is controlled by a boolean
+		constant "align" which, if true, cuses the translator to
+		generate calls to to functions STRALIGN and SETALIGN.
+		STRALIGN and SETALIGN are macros which by default call simple
+		subroutines that will copy data to well aligned structures.
+
+	7)	Types and variables in nested procedures were not always moved
+		to an enclosing scope when the procedures were un-nested.
+
+	8)	The I/O macros were modified so that "rewind" was replaced by
+		"fseek" and so that the generated code is type-correct.
+
+	9)	The translator didn't handle incomplete Pascal programs as
+		documented.
+
+	10)	A few changes were made to remove illegal Pascal-code.
